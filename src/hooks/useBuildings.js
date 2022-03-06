@@ -1,9 +1,9 @@
 import { useRecoilState, useSetRecoilState } from 'recoil'
 import {
   buildingState as buildingAtom,
-  workingState as workingAtom,
+  workingState as workingAtom
 } from '../store/atoms'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import axios from 'axios'
 import { map } from 'lodash'
 
@@ -20,17 +20,17 @@ const useBuildings = () => {
   const [buildingState, setBuildingState] = useRecoilState(buildingAtom)
   const setWorkingState = useSetRecoilState(workingAtom)
 
-  const fetchData = () => {
+  const fetchData = useCallback(() => {
     return axios.post('https://cchvf3mkzi.execute-api.eu-west-1.amazonaws.com/dev/build', buildingState ?? [])
       .then(response => {
         setBuildings(response.data)
         return response.data
       })
-  }
+  }, [buildingState])
 
   useEffect(() => {
     !initialSetup && buildingState && fetchData()
-  }, [buildingState])
+  }, [buildingState, fetchData])
 
   useEffect(() => {
     fetchData().then(buildings => {
