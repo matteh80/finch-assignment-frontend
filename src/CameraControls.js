@@ -15,7 +15,7 @@ const CameraControls = () => {
 
   const onChange = useCallback(() => {
     invalidate()
-  }, [invalidate])
+  }, [invalidate, camera.position])
 
   useEffect(() => {
     if (!controls.current) return

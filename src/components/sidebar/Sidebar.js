@@ -16,8 +16,8 @@ const Sidebar = ({ buildings }) => {
   }
 
   return (
-    <div className='w-96 shadow-lg p-8 bg-gray-200'>
-      <div className='flex flex-col space-y-8'>
+    <div className='w-96 shadow-lg p-4 bg-gray-200 overflow-scroll'>
+      <div className='flex flex-col space-y-4'>
         {map(workingState, (building, index) => (
           <BuildingValues key={index} building={buildings[index]} index={index} />
         ))}

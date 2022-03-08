@@ -1,10 +1,10 @@
 import * as THREE from 'three'
 import { Earcut } from 'three/src/extras/Earcut'
 import { map } from 'lodash'
-import { useCallback, useState } from 'react'
+import { forwardRef, useCallback, useState } from 'react'
 import { useUpdate } from 'react-three-fiber'
 
-const Floor = ({ floorPolygon }) => {
+const Floor = forwardRef(({ floorPolygon }, ref) => {
   const [mouseOver, setMouseOver] = useState(false)
 
   const handleMouseOver = useCallback((e, value) => {
@@ -17,18 +17,19 @@ const Floor = ({ floorPolygon }) => {
   const mapped = map(triangleIndices, index => vertices[index])
   const position = new THREE.BufferAttribute(new Float32Array(mapped.flat()), 3)
 
-  const ref = useUpdate(geometry => {
+  const bufferGeometryRef = useUpdate(geometry => {
     geometry.setAttribute('position', position)
     geometry.attributes.position.needsUpdate = true
   }, [position])
 
   return (
     <mesh
+      ref={ref}
       onPointerOver={(e) => handleMouseOver(e, true)}
       onPointerOut={(e) => handleMouseOver(e, false)}
     >
       <bufferGeometry
-        ref={ref}
+        ref={bufferGeometryRef}
         attach='geometry'
         onUpdate={self => {
           self.computeVertexNormals()
@@ -50,6 +51,6 @@ const Floor = ({ floorPolygon }) => {
       />
     </mesh>
   )
-}
+})
 
 export default Floor

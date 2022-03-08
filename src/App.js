@@ -6,14 +6,19 @@ import Sidebar from './components/sidebar/Sidebar'
 import useBuildings from './hooks/useBuildings'
 import { map } from 'lodash'
 import Building from './components/building/Building'
+import { useRecoilValue } from 'recoil'
+import {
+  buildingState as buildingAtom
+} from './store/atoms'
 
 THREE.Object3D.DefaultUp.set(0, 0, 1)
 
 const App = () => {
   const buildings = useBuildings()
+  const buildingState = useRecoilValue(buildingAtom)
 
   return (
-    <div className='flex'>
+    <div className='flex max-h-screen overflow-hidden'>
       {buildings
         ? (
           <>
@@ -32,19 +37,13 @@ const App = () => {
             >
               <ambientLight intensity={1.0} />
               <directionalLight intensity={0.2} position={[1, 1, 1]} />
-              {/*{map(buildingGeometries, (buildingGeometry, index) => {*/}
-              {/*  return (*/}
-              {/*    <primitive*/}
-              {/*      key={index}*/}
-              {/*      object={buildingGeometry}*/}
-              {/*    />*/}
-              {/*  )*/}
-              {/*})}*/}
+
               {map(buildings.items, (building, index) => {
                 return (
                   <Building
                     key={index}
                     building={building}
+                    buildingState={buildingState[index]}
                   />
                 )
               })}
