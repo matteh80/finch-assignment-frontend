@@ -6,19 +6,29 @@ import Sidebar from './components/sidebar/Sidebar'
 import useBuildings from './hooks/useBuildings'
 import { map } from 'lodash'
 import Building from './components/building/Building'
-import { useRecoilValue } from 'recoil'
 import {
-  buildingState as buildingAtom
+  useRecoilBridgeAcrossReactRoots_UNSTABLE,
+  useRecoilValue
+} from 'recoil'
+import {
+  buildingState as buildingAtom,
+  floorData as floorAtom
 } from './store/atoms'
 
 THREE.Object3D.DefaultUp.set(0, 0, 1)
 
 const App = () => {
+  const RecoilBridge = useRecoilBridgeAcrossReactRoots_UNSTABLE()
   const buildings = useBuildings()
   const buildingState = useRecoilValue(buildingAtom)
+  const floorData = useRecoilValue(floorAtom)
 
   return (
-    <div className='flex max-h-screen overflow-hidden'>
+    <div className='flex max-h-screen overflow-hidden relative'>
+      <div className={`absolute top-1 left-[50%] z-40 bg-white p-4 rounded flex-col w-60 shadow transition-opacity ${floorData ? 'opacity-100' : 'opacity-0'}`} style={{ transform: 'translateX(calc(-50% - 6rem))' }}>
+        <div>Area: {floorData?.area}</div>
+        <div>Level: {floorData?.level}</div>
+      </div>
       {buildings
         ? (
           <>
@@ -35,19 +45,21 @@ const App = () => {
                 gl.setClearColor('#eeeeee')
               }}
             >
-              <ambientLight intensity={1.0} />
-              <directionalLight intensity={0.2} position={[1, 1, 1]} />
+              <RecoilBridge>
+                <ambientLight intensity={1.0} />
+                <directionalLight intensity={0.2} position={[1, 1, 1]} />
 
-              {map(buildings.items, (building, index) => {
-                return (
-                  <Building
-                    key={index}
-                    building={building}
-                    buildingState={buildingState[index]}
-                  />
-                )
-              })}
-              <CameraControls />
+                {map(buildings.items, (building, index) => {
+                  return (
+                    <Building
+                      key={index}
+                      building={building}
+                      buildingState={buildingState[index]}
+                    />
+                  )
+                })}
+                <CameraControls />
+              </RecoilBridge>
             </Canvas>
             <Sidebar buildings={buildings?.items} />
           </>

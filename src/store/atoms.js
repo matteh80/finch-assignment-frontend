@@ -9,3 +9,8 @@ export const workingState = atom({
   key: 'working',
   default: []
 })
+
+export const floorData = atom({
+  key: 'floorData',
+  default: null
+})

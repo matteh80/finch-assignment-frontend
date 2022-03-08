@@ -48,7 +48,7 @@ const Building = ({ building, buildingState }) => {
           <group key={`buildingPart_${index}`}>
             {floor
               ? map(buildingPart.items, (floorGroup, groupIndex) => map(floorGroup.items,
-                  (floorPolygon, floorIndex) => <Floor ref={buildingRef} key={`floor_${groupIndex}_${floorIndex}`} floorPolygon={floorPolygon} />))
+                  (floorPolygon, floorIndex) => <Floor ref={buildingRef} key={`floor_${groupIndex}_${floorIndex}`} floorPolygon={floorPolygon} userData={{ ...floorGroup.tags }} />))
               : map(buildingPart.items, (polygon, polyIndex) => <PolyLine key={`polyline_${polyIndex}`} polygon={polygon} />)}
           </group>
         )
